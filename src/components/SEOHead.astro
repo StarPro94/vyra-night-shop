@@ -1,0 +1,78 @@
+---
+import { siteConfig } from "../data/site";
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>
+  {siteConfig.name} | Epicerie de nuit a {siteConfig.address.city} - Snacks, Boissons, CBD
+</title>
+<meta name="description" content={siteConfig.description} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<!-- Open Graph -->
+<meta
+  property="og:title"
+  content={`${siteConfig.name} | Epicerie de nuit ${siteConfig.address.city}`}
+/>
+<meta property="og:description" content={siteConfig.description} />
+<meta property="og:image" content={`${siteConfig.url}/og-image.jpg`} />
+<meta property="og:url" content={siteConfig.url} />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="fr_FR" />
+
+<!-- Canonical -->
+<link rel="canonical" href={siteConfig.url} />
+
+<!-- Google Fonts: Space Grotesk + Bungee + Space Mono -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bungee&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap"
+  rel="stylesheet"
+/>
+
+<!-- JSON-LD Structured Data -->
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ConvenienceStore",
+    name: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    telephone: siteConfig.phone,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: siteConfig.address.street,
+      addressLocality: siteConfig.address.city,
+      postalCode: siteConfig.address.postalCode,
+      addressRegion: siteConfig.address.region,
+      addressCountry: siteConfig.address.country,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: siteConfig.geo.latitude,
+      longitude: siteConfig.geo.longitude,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: siteConfig.hours.open,
+        closes: siteConfig.hours.close,
+      },
+    ],
+    sameAs: [`https://www.instagram.com/${siteConfig.instagram}`],
+    image: `${siteConfig.url}/og-image.jpg`,
+    priceRange: "$",
+  })}
+/>

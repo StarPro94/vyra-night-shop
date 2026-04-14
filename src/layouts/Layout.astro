@@ -1,0 +1,62 @@
+---
+import "../styles/global.css";
+import SEOHead from "../components/SEOHead.astro";
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <SEOHead />
+  </head>
+  <body class="noise-overlay">
+    <a
+      href="#catalogue"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[10000] focus:bg-vyra focus:text-bg focus:px-4 focus:py-2 focus:rounded-sm"
+    >
+      Aller au catalogue
+    </a>
+    <slot />
+    <script>
+      // Scroll reveal with IntersectionObserver
+      const reveals = document.querySelectorAll(".reveal");
+      if (reveals.length > 0) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+        );
+        reveals.forEach((el) => observer.observe(el));
+      }
+
+      // Category nav active state on scroll
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll("[data-nav-link]");
+      if (sections.length > 0 && navLinks.length > 0) {
+        const navObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                navLinks.forEach((link) => {
+                  const href = link.getAttribute("href");
+                  if (href === `#${entry.target.id}`) {
+                    link.setAttribute("aria-current", "true");
+                  } else {
+                    link.removeAttribute("aria-current");
+                  }
+                });
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+        sections.forEach((s) => navObserver.observe(s));
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+/* ============================================
+   VYRA NIGHT SHOP — Design System
+   Style: GTA San Andreas mix
+   ============================================ */
+
+@theme {
+  /* Background & Surface */
+  --color-bg: #0A0A0A;
+  --color-surface: #141414;
+  --color-surface-elevated: #1E1E1E;
+  --color-surface-border: #2A2A2A;
+
+  /* Brand Green (WCAG AA adjusted from #4CAF50) */
+  --color-vyra: #66BB6A;
+  --color-vyra-light: #81C784;
+  --color-vyra-dark: #388E3C;
+  --color-vyra-dim: #1B3A1B;
+
+  /* GTA SA Accent Colors */
+  --color-sa-orange: #E8935A;
+  --color-sa-orange-light: #F0A87A;
+  --color-sa-violet: #9B6BB0;
+  --color-sa-violet-light: #B388C9;
+  --color-sa-mauve: #D4849A;
+  --color-sa-tan: #D4A76A;
+
+  /* Text */
+  --color-text: #F5F5F5;
+  --color-text-muted: #B3B3B3;
+  --color-text-subtle: #808080;
+
+  /* Fonts */
+  --font-display: "Pricedown", "Bungee", system-ui, sans-serif;
+  --font-body: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+/* ============================================
+   Font Loading
+   ============================================ */
+
+@font-face {
+  font-family: "Pricedown";
+  src: url("/fonts/pricedown-bl.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+html {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   Noise/Grain Overlay (GTA SA texture)
+   ============================================ */
+
+.noise-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ============================================
+   Hero Background Gradient Washes (SA style)
+   ============================================ */
+
+.hero-bg {
+  background:
+    radial-gradient(ellipse at 20% 80%, rgba(232, 147, 90, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(155, 107, 176, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(212, 132, 154, 0.08) 0%, transparent 60%),
+    var(--color-bg);
+}
+
+/* ============================================
+   Scroll Reveal Animations
+   ============================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition-delay: calc(var(--stagger, 0) * 60ms);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ============================================
+   Scroll indicator animation
+   ============================================ */
+
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+.animate-bounce-down {
+  animation: bounce-down 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bounce-down {
+    animation: none;
+  }
+}
+
+/* ============================================
+   Scrollbar styling (category nav)
+   ============================================ */
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   Focus styles
+   ============================================ */
+
+:focus-visible {
+  outline: 2px solid var(--color-vyra);
+  outline-offset: 2px;
+}

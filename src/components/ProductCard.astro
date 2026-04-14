@@ -1,0 +1,67 @@
+---
+import type { Product } from "../data/products";
+
+interface Props {
+  product: Product;
+  index: number;
+}
+
+const { product, index } = Astro.props;
+
+const badgeStyles: Record<string, { label: string; class: string }> = {
+  nouveau: { label: "Nouveau", class: "bg-vyra text-bg" },
+  populaire: { label: "Populaire", class: "bg-sa-orange text-bg" },
+  "import-usa": { label: "USA", class: "bg-sa-violet text-text" },
+  "import-japon": { label: "Japon", class: "bg-sa-mauve text-bg" },
+};
+
+const badge = product.badge ? badgeStyles[product.badge] : null;
+
+// Placeholder color based on category
+const placeholderColors: Record<string, string> = {
+  snacks: "from-sa-orange/20 to-sa-tan/10",
+  boissons: "from-vyra/20 to-vyra-dim/30",
+  "puff-cbd": "from-sa-violet/20 to-sa-mauve/10",
+  importes: "from-sa-mauve/20 to-sa-orange/10",
+};
+---
+
+<article
+  class="group bg-surface border border-surface-border rounded-sm overflow-hidden
+         hover:border-vyra hover:-translate-y-1 transition-all duration-200
+         reveal"
+  style={`--stagger: ${index}`}
+>
+  <!-- Image / Placeholder -->
+  <div class={`relative aspect-[4/3] bg-gradient-to-br ${placeholderColors[product.category] || "from-surface-elevated to-surface"} flex items-center justify-center overflow-hidden`}>
+    {product.image ? (
+      <img
+        src={product.image}
+        alt={product.name}
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        loading="lazy"
+        width="400"
+        height="300"
+      />
+    ) : (
+      <span class="font-display text-2xl text-text-subtle/30 select-none" aria-hidden="true">
+        VYRA
+      </span>
+    )}
+    {badge && (
+      <span class={`absolute top-2 right-2 px-2 py-1 text-xs font-bold uppercase tracking-wide rounded-sm ${badge.class}`}>
+        {badge.label}
+      </span>
+    )}
+  </div>
+
+  <!-- Info -->
+  <div class="p-4">
+    <h3 class="font-display text-lg leading-tight text-text">
+      {product.name}
+    </h3>
+    {product.description && (
+      <p class="text-sm text-text-muted mt-1 line-clamp-2">{product.description}</p>
+    )}
+  </div>
+</article>
