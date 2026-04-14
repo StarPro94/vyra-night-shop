@@ -27,3 +27,5 @@ pnpm-debug.log*
 .playwright-mcp/
 *.png
 !public/**/*.png
+
+.vercel
