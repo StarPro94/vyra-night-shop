@@ -32,7 +32,8 @@
   --color-text-subtle: #808080;
 
   /* Fonts */
-  --font-display: "Pricedown", "Bungee", system-ui, sans-serif;
+  --font-display: "Pricedown", sans-serif;
+  --font-display-alt: "Bungee", sans-serif;
   --font-body: "Space Grotesk", system-ui, sans-serif;
   --font-mono: "Space Mono", ui-monospace, monospace;
 }
@@ -43,10 +44,25 @@
 
 @font-face {
   font-family: "Pricedown";
-  src: url("/fonts/pricedown-bl.woff2") format("woff2");
-  font-weight: 900;
+  /* OTF served directly — wawoff2 conversion silently deformed glyphs
+     (lost R's tail and other Pricedown-specific cuts). Browsers handle
+     OTF natively; the 32 KB size increase is negligible. */
+  src: url("/fonts/pricedown-bl.otf?v=3") format("opentype");
+  font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+/* ============================================
+   Pricedown Stylistic Set 1 (ss01)
+   Unlocks the iconic GTA-style alternates: R with tail,
+   N with descender, slashed cuts on V/A/Y, etc.
+   Only applied to the VYRA wordmark — using it everywhere
+   makes the page feel overloaded.
+   ============================================ */
+
+.vyra-wordmark {
+  font-feature-settings: "ss01", "salt", "liga";
 }
 
 /* ============================================

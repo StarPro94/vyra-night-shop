@@ -24,6 +24,15 @@ import { siteConfig } from "../data/site";
 <!-- Canonical -->
 <link rel="canonical" href={siteConfig.url} />
 
+<!-- Preload Pricedown (self-hosted OTF, avoids FOUT on hero/section titles) -->
+<link
+  rel="preload"
+  href="/fonts/pricedown-bl.otf?v=3"
+  as="font"
+  type="font/otf"
+  crossorigin
+/>
+
 <!-- Google Fonts: Space Grotesk + Bungee + Space Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

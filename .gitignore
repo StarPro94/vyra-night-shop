@@ -29,3 +29,7 @@ pnpm-debug.log*
 !public/**/*.png
 
 .vercel
+
+# Pricedown OTF (desktop-license only, not for redistribution)
+scripts/assets/*.otf
+scripts/assets/*.ttf
