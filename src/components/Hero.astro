@@ -1,54 +1,472 @@
 ---
 import { siteConfig } from "../data/site";
+
+const marquee = [...siteConfig.marqueeMessages, ...siteConfig.marqueeMessages];
+
+// Deterministic particle seeds (no hydration mismatch)
+const particles = Array.from({ length: 24 }, (_, i) => ({
+  left: (i * 37) % 100,
+  delay: (i * 0.7) % 12,
+  duration: 22 + ((i * 3) % 18),
+  drift: (i % 2 === 0 ? 1 : -1) * (8 + ((i * 5) % 30)),
+  color: ["text-sa-orange", "text-vyra", "text-sa-violet-light", "text-sa-mauve"][i % 4],
+}));
 ---
 
-<section class="hero-bg relative flex flex-col items-center justify-center min-h-dvh px-4 text-center overflow-hidden">
-  <!-- Decorative lines (GTA SA loading screen style) -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-vyra/20 to-transparent"></div>
-    <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-sa-orange/20 to-transparent"></div>
-    <div class="absolute -left-20 top-1/4 w-64 h-64 rounded-full bg-vyra/5 blur-3xl"></div>
-    <div class="absolute -right-20 bottom-1/4 w-64 h-64 rounded-full bg-sa-orange/5 blur-3xl"></div>
+<section
+  class="hero-night-canvas relative min-h-dvh overflow-hidden pb-40 lg:pb-48 flex flex-col justify-center"
+  aria-labelledby="hero-title"
+>
+  <!-- ═══════════════════════════════════════════════
+       LAYER 0 — Atmosphere: particles + light shafts
+       ═══════════════════════════════════════════════ -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    {particles.map((p) => (
+      <span
+        class={`particle ${p.color}`}
+        style={`left: ${p.left}%; top: 100%; --p-delay: ${p.delay}; --p-dur: ${p.duration}s; --p-x: ${p.drift}px;`}
+      />
+    ))}
+    <div class="absolute -top-1/3 -left-1/4 w-1/2 h-[140%] opacity-[0.06] rotate-12 bg-gradient-to-b from-sa-orange via-transparent to-transparent blur-3xl"></div>
+    <div class="absolute -top-1/3 -right-1/4 w-1/2 h-[140%] opacity-[0.07] -rotate-12 bg-gradient-to-b from-sa-violet via-transparent to-transparent blur-3xl"></div>
   </div>
 
-  <!-- Logo -->
-  <div class="relative z-10 mb-6 inline-block">
-    <h1 class="font-display vyra-wordmark text-7xl sm:text-8xl md:text-9xl tracking-wider text-text leading-none">
-      VYRA
-    </h1>
-    <p class="font-display text-2xl sm:text-3xl md:text-4xl tracking-widest text-vyra mt-4 text-right">
-      NIGHT SHOP
-    </p>
+  <!-- ═══════════════════════════════════════════════
+       LAYER 4 — Bat-Signal: cone from skyline chases V across the sky
+       Two synchronized animations (same duration, same keyframes)
+       ═══════════════════════════════════════════════ -->
+  <div class="hidden md:block absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+    <!-- Cone rotates from skyline apex to follow V (angle set dynamically by script below) -->
+    <div class="batsignal-cone absolute inset-0">
+      <svg
+        class="absolute inset-0 w-full h-full"
+        preserveAspectRatio="none"
+        viewBox="0 0 100 100"
+        style="overflow: visible;"
+      >
+        <defs>
+          <!-- Faisceau : lumineux \u00e0 la skyline, reste visible jusqu'au V o\u00f9 il
+               se fond dans le halo (le JS scale la pointe pile sur le V). -->
+          <linearGradient id="bs-beam" x1="50%" y1="100%" x2="50%" y2="0%">
+            <stop offset="0%" stop-color="#81C784" stop-opacity="0.55"/>
+            <stop offset="20%" stop-color="#66BB6A" stop-opacity="0.38"/>
+            <stop offset="50%" stop-color="#66BB6A" stop-opacity="0.24"/>
+            <stop offset="80%" stop-color="#66BB6A" stop-opacity="0.14"/>
+            <stop offset="100%" stop-color="#66BB6A" stop-opacity="0.06"/>
+          </linearGradient>
+          <filter id="bs-blur" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="1.6"/>
+          </filter>
+        </defs>
+        <!-- Apex (50,100) = bas du viewport (skyline). Tip (46,-150)/(54,-150)
+             sort largement au-dessus du viewport pour toujours atteindre le V,
+             quelle que soit sa position ou l'aspect ratio. -->
+        <polygon
+          points="50,100 46,-150 54,-150"
+          fill="url(#bs-beam)"
+          filter="url(#bs-blur)"
+        />
+      </svg>
+    </div>
+
+    <!-- V + halo wandering unit. Cone rotation is locked on V center via raf script.
+         Dimensions volontairement contenues : le bat-signal est atmosph\u00e9rique,
+         pas focal. Il compl\u00e8te VYRA sans lui voler la vedette. -->
+    <div class="batsignal-wander absolute top-0 left-0">
+      <!-- Soft radial halo -->
+      <div
+        class="absolute"
+        style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14vw; height: 12vw; background: radial-gradient(ellipse, rgba(129,199,132,0.18) 0%, rgba(102,187,106,0.06) 45%, rgba(102,187,106,0) 75%); filter: blur(24px);"
+      ></div>
+      <!-- Batman-style ring (subtle, discrete) -->
+      <div
+        class="absolute pointer-events-none"
+        style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: clamp(3.5rem, 7vw, 6rem); aspect-ratio: 1; border-radius: 9999px; border: 1.25px solid rgba(129, 199, 132, 0.24); box-shadow: 0 0 12px rgba(129, 199, 132, 0.10), inset 0 0 10px rgba(129, 199, 132, 0.05); opacity: 0.55;"
+        aria-hidden="true"
+      ></div>
+      <span
+        class="block font-display leading-none select-none text-vyra"
+        style="font-size: clamp(2.5rem, 5vw, 4.5rem); opacity: 0.24; filter: blur(0.8px);"
+      >
+        V
+      </span>
+    </div>
   </div>
 
-  <!-- Tagline -->
-  <p class="relative z-10 font-display text-lg sm:text-xl md:text-2xl text-sa-orange tracking-wide mt-4 max-w-xl">
-    {siteConfig.tagline}
-  </p>
+  <!-- ═══════════════════════════════════════════════
+       MAIN GRID — Editorial split (desktop) / stack (mobile)
+       ═══════════════════════════════════════════════ -->
+  <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-14 lg:pt-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-x-10 items-start">
 
-  <!-- Subtitle -->
-  <p class="relative z-10 text-text-muted text-sm sm:text-base mt-4 max-w-md leading-relaxed">
-    Epicerie de nuit a {siteConfig.address.city} &mdash; Snacks, boissons, puff, CBD & produits importes
-  </p>
+      <!-- ┌─────────────────────────────────────────┐
+           │ LEFT COLUMN — Logo block (60%)           │
+           └─────────────────────────────────────────┘ -->
+      <div class="lg:col-span-7 relative text-center lg:text-left">
+        <!-- Serial number header -->
+        <p
+          class="hero-rise font-mono text-[10px] sm:text-xs tracking-[0.35em] text-text-subtle mb-5 uppercase"
+          style="--rise-delay: 100"
+        >
+          <span class="text-sa-orange">★</span>
+          14 RUE LEVEILLÉ · V-C 02600 · DEPUIS 2026
+          <span class="text-sa-orange">★</span>
+        </p>
 
-  <!-- CTA -->
-  <a
-    href="#catalogue"
-    class="relative z-10 mt-8 inline-flex items-center gap-2 px-8 py-3 min-h-[48px]
-           bg-sa-orange text-bg font-bold text-base uppercase tracking-wide rounded-sm
-           hover:bg-sa-orange-light hover:-translate-y-0.5 active:scale-[0.98]
-           transition-all duration-150"
+        <!-- VYRA wordmark (monumental, left-aligned on desktop) -->
+        <h1
+          id="hero-title"
+          class="hero-rise font-display vyra-wordmark text-text leading-[0.82]"
+          style="font-size: clamp(5rem, 18vw, 16rem); --rise-delay: 250"
+        >
+          VYRA
+        </h1>
+
+        <!-- NIGHT SHOP (neon glow) — aligned with VYRA baseline -->
+        <p
+          class="hero-rise mt-1 lg:mt-2"
+          style="--rise-delay: 700"
+        >
+          <span
+            class="font-display-alt text-vyra tracking-[0.18em] neon-glow inline-block"
+            style="font-size: clamp(1.25rem, 3.4vw, 3rem);"
+          >
+            NIGHT SHOP
+          </span>
+        </p>
+
+        <!-- Loading bar — now BELOW the whole logo block (below the R's descender) -->
+        <div
+          class="loading-bar hero-rise mt-8 lg:mt-10 mx-auto lg:mx-0 w-4/5 max-w-md lg:w-full lg:max-w-xl"
+          style="--rise-delay: 900"
+          aria-hidden="true"
+        ></div>
+
+        <!-- Floating stickers around logo (desktop only) -->
+        <div class="hidden lg:block" aria-hidden="true">
+          <span class="sticker sticker-1 absolute top-2 right-4 xl:right-8">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0v10l-8 4m8-14l-8 4m0 0v10m0-10L4 7m0 0v10l8 4" />
+            </svg>
+            Snacks
+          </span>
+          <span class="sticker sticker-2 absolute top-[52%] -left-2 xl:-left-6">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+            CBD & Puff
+          </span>
+        </div>
+      </div>
+
+      <!-- ┌─────────────────────────────────────────┐
+           │ RIGHT COLUMN — Info block (40%)          │
+           └─────────────────────────────────────────┘ -->
+      <div class="lg:col-span-5 relative text-center lg:text-left lg:pt-4 xl:pt-6">
+        <!-- Status LIVE callout -->
+        <div
+          id="live-status"
+          class="hero-rise inline-flex items-center gap-3 px-4 py-2 mb-6 lg:mb-8
+                 bg-black/60 backdrop-blur-sm border border-white/10 rounded-full
+                 text-xs sm:text-sm font-mono tracking-wider uppercase"
+          style="--rise-delay: 0"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <span class="status-dot text-neon-live" aria-hidden="true"></span>
+          <span id="live-status-text" class="text-text">Vérification des horaires...</span>
+        </div>
+
+        <!-- Editorial categories list (factual, magazine-style) -->
+        <ul
+          class="hero-rise font-display leading-[1] tracking-tight space-y-1"
+          style="font-size: clamp(2rem, 4.2vw, 3.5rem); --rise-delay: 500"
+          aria-label="Nos rayons"
+        >
+          <li class="text-sa-orange">Snacks.</li>
+          <li class="text-vyra">Boissons.</li>
+          <li class="text-sa-mauve">Puff &amp; CBD.</li>
+          <li class="text-sa-violet-light">Imports US/JP.</li>
+        </ul>
+
+        <!-- Description body -->
+        <p class="hero-rise text-text-muted text-sm sm:text-base mt-6 max-w-md mx-auto lg:mx-0 leading-relaxed" style="--rise-delay: 1000">
+          Épicerie de nuit à {siteConfig.address.city} — ouverte de {siteConfig.hours.open} à {siteConfig.hours.close}, 7j/7.
+        </p>
+
+        <!-- CTA duo (stacked on lg — narrow column, editorial menu feel) -->
+        <div
+          class="hero-rise mt-7 flex flex-col sm:flex-row lg:flex-col items-center sm:items-stretch lg:items-stretch justify-center lg:justify-start gap-3 sm:gap-4 lg:gap-3 lg:max-w-sm lg:mx-0 mx-auto"
+          style="--rise-delay: 1100"
+        >
+          <a
+            href={`https://wa.me/${siteConfig.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 px-7 py-3 min-h-[48px] w-full sm:w-auto
+                   bg-vyra text-bg font-bold text-sm uppercase tracking-wider rounded-sm
+                   hover:bg-vyra-light hover:-translate-y-0.5 active:scale-[0.98]
+                   transition-all duration-150
+                   shadow-[0_0_0_1px_rgba(102,187,106,0.3),0_6px_24px_-4px_rgba(102,187,106,0.35)]"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+            Commander WhatsApp
+          </a>
+          <a
+            href="#catalogue"
+            class="inline-flex items-center justify-center gap-2 px-7 py-3 min-h-[48px] w-full sm:w-auto
+                   bg-transparent border-2 border-sa-orange text-sa-orange font-bold text-sm uppercase tracking-wider rounded-sm
+                   hover:bg-sa-orange hover:text-bg hover:-translate-y-0.5 active:scale-[0.98]
+                   transition-all duration-150"
+          >
+            Voir le catalogue
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Floating stickers on info side (desktop only) -->
+        <div class="hidden lg:block" aria-hidden="true">
+          <span class="sticker sticker-3 absolute -top-2 -right-2 xl:-right-6">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Import US/JP
+          </span>
+          <span class="sticker sticker-4 absolute bottom-4 -right-4 xl:-right-8">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+            </svg>
+            Livraison
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile stickers row (stacked under both columns) -->
+    <div class="lg:hidden mt-10 flex flex-wrap justify-center gap-2 hero-rise" style="--rise-delay: 1200" aria-hidden="true">
+      <span class="sticker sticker-1" style="animation: none; transform: rotate(-4deg);">Snacks</span>
+      <span class="sticker sticker-2" style="animation: none; transform: rotate(3deg);">CBD & Puff</span>
+      <span class="sticker sticker-3" style="animation: none; transform: rotate(-2deg);">Import US/JP</span>
+      <span class="sticker sticker-4" style="animation: none; transform: rotate(5deg);">Livraison</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LAYER 1 — Skyline silhouette (bottom)
+       ═══════════════════════════════════════════════ -->
+  <div class="absolute bottom-10 sm:bottom-12 inset-x-0 h-28 sm:h-36 pointer-events-none z-10" aria-hidden="true">
+    <div class="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+    <svg
+      class="absolute inset-x-0 bottom-0 w-full h-full"
+      viewBox="0 0 1440 200"
+      preserveAspectRatio="xMidYEnd slice"
+      fill="none"
+    >
+      <g fill="#050505">
+        <rect x="0"    y="130" width="60"  height="70"/>
+        <rect x="60"   y="100" width="80"  height="100"/>
+        <rect x="140"  y="120" width="50"  height="80"/>
+        <rect x="190"  y="80"  width="95"  height="120"/>
+        <rect x="285"  y="110" width="60"  height="90"/>
+        <rect x="345"  y="70"  width="110" height="130"/>
+        <rect x="455"  y="95"  width="75"  height="105"/>
+        <rect x="530"  y="55"  width="130" height="145"/>
+        <rect x="660"  y="85"  width="70"  height="115"/>
+        <rect x="730"  y="110" width="50"  height="90"/>
+        <rect x="780"  y="65"  width="120" height="135"/>
+        <rect x="900"  y="100" width="80"  height="100"/>
+        <rect x="980"  y="75"  width="100" height="125"/>
+        <rect x="1080" y="115" width="55"  height="85"/>
+        <rect x="1135" y="90"  width="85"  height="110"/>
+        <rect x="1220" y="105" width="70"  height="95"/>
+        <rect x="1290" y="130" width="55"  height="70"/>
+        <rect x="1345" y="95"  width="95"  height="105"/>
+      </g>
+      <g fill="#E8935A" opacity="0.7">
+        <rect x="70"   y="115" width="6" height="6"/>
+        <rect x="82"   y="115" width="6" height="6"/>
+        <rect x="200"  y="100" width="5" height="5"/>
+        <rect x="215"  y="100" width="5" height="5"/>
+        <rect x="260"  y="120" width="5" height="5"/>
+        <rect x="360"  y="90"  width="6" height="6"/>
+        <rect x="380"  y="90"  width="6" height="6"/>
+        <rect x="400"  y="110" width="6" height="6"/>
+        <rect x="550"  y="75"  width="7" height="7"/>
+        <rect x="580"  y="75"  width="7" height="7"/>
+        <rect x="610"  y="95"  width="7" height="7"/>
+        <rect x="800"  y="85"  width="6" height="6"/>
+        <rect x="830"  y="85"  width="6" height="6"/>
+        <rect x="860"  y="105" width="6" height="6"/>
+        <rect x="1000" y="95"  width="6" height="6"/>
+        <rect x="1030" y="95"  width="6" height="6"/>
+        <rect x="1160" y="110" width="5" height="5"/>
+        <rect x="1370" y="115" width="6" height="6"/>
+        <rect x="1400" y="115" width="6" height="6"/>
+      </g>
+      <g fill="#F5F5F5" opacity="0.35">
+        <rect x="75"   y="135" width="4" height="4"/>
+        <rect x="210"  y="130" width="4" height="4"/>
+        <rect x="395"  y="130" width="5" height="5"/>
+        <rect x="570"  y="110" width="5" height="5"/>
+        <rect x="815"  y="120" width="4" height="4"/>
+        <rect x="1020" y="130" width="4" height="4"/>
+        <rect x="1380" y="140" width="4" height="4"/>
+      </g>
+      <g class="enseigne" style="--blink-delay: 0">
+        <rect x="205" y="90" width="38" height="8" fill="#66BB6A"/>
+      </g>
+      <g class="enseigne" style="--blink-delay: 1200">
+        <rect x="560" y="68" width="55" height="10" fill="#E8935A"/>
+      </g>
+      <g class="enseigne" style="--blink-delay: 2500">
+        <rect x="810" y="78" width="48" height="9" fill="#9B6BB0"/>
+      </g>
+      <g class="enseigne" style="--blink-delay: 800">
+        <rect x="1005" y="88" width="42" height="8" fill="#D4849A"/>
+      </g>
+      <g class="enseigne" style="--blink-delay: 3000">
+        <rect x="1370" y="107" width="40" height="7" fill="#66BB6A"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       LAYER 7 — Marquee ticker (bottom band)
+       ═══════════════════════════════════════════════ -->
+  <div
+    class="absolute bottom-0 inset-x-0 z-10 bg-sa-orange text-bg border-y-2 border-black py-2.5 overflow-hidden"
+    aria-hidden="true"
   >
-    Decouvrir nos produits
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-  </a>
-
-  <!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-down" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
+    <div class="marquee">
+      <div class="marquee__track">
+        {marquee.map((msg) => (
+          <span class="marquee__item">
+            <span aria-hidden="true">✦</span>
+            {msg}
+          </span>
+        ))}
+      </div>
+      <div class="marquee__track" aria-hidden="true">
+        {marquee.map((msg) => (
+          <span class="marquee__item">
+            <span aria-hidden="true">✦</span>
+            {msg}
+          </span>
+        ))}
+      </div>
+    </div>
   </div>
 </section>
+
+<script>
+  // ═════════════════════════════════════════════════
+  // LIVE STATUS — reads real time, computes open/closed
+  // ═════════════════════════════════════════════════
+  (function () {
+    const statusEl = document.getElementById("live-status");
+    const textEl = document.getElementById("live-status-text");
+    if (!statusEl || !textEl) return;
+
+    const openHour = 18;
+    const closeHour = 2;
+
+    function compute() {
+      const now = new Date();
+      const h = now.getHours();
+      const m = now.getMinutes();
+      const minutesNow = h * 60 + m;
+      const openMin = openHour * 60;
+      const closeMin = closeHour * 60;
+
+      const afterOpen = minutesNow >= openMin;
+      const beforeClose = minutesNow < closeMin;
+      const isOpen = afterOpen || beforeClose;
+
+      const dot = statusEl!.querySelector(".status-dot");
+
+      if (isOpen) {
+        let rem: number;
+        if (afterOpen) {
+          rem = 24 * 60 - minutesNow + closeMin;
+        } else {
+          rem = closeMin - minutesNow;
+        }
+        const rh = Math.floor(rem / 60);
+        const rm = rem % 60;
+        const hPart = rh > 0 ? `${rh}h` : "";
+        const mPart = rm > 0 ? `${String(rm).padStart(2, "0")}min` : rh > 0 ? "" : "0min";
+        const sep = rh > 0 && rm > 0 ? " " : "";
+        textEl!.innerHTML = `<span class="text-neon-live font-bold">Ouvert</span> · Ferme dans ${hPart}${sep}${mPart}`;
+        statusEl!.setAttribute("aria-label", `Statut en direct : ouvert. Ferme dans ${hPart} ${mPart}`);
+        if (dot) {
+          dot.classList.remove("is-closed");
+          (dot as HTMLElement).classList.add("text-neon-live");
+          (dot as HTMLElement).classList.remove("text-neon-dead");
+        }
+      } else {
+        const rem = minutesNow < openMin ? openMin - minutesNow : 24 * 60 - minutesNow + openMin;
+        const rh = Math.floor(rem / 60);
+        const rm = rem % 60;
+        textEl!.innerHTML = `<span class="text-neon-dead font-bold">Fermé</span> · Ouvre à 18h00 (dans ${rh}h${String(rm).padStart(2, "0")})`;
+        statusEl!.setAttribute("aria-label", `Statut en direct : fermé. Ouvre dans ${rh} heures ${rm} minutes`);
+        if (dot) {
+          dot.classList.add("is-closed");
+          (dot as HTMLElement).classList.remove("text-neon-live");
+          (dot as HTMLElement).classList.add("text-neon-dead");
+        }
+      }
+    }
+
+    compute();
+    const interval = setInterval(compute, 30_000);
+    window.addEventListener("beforeunload", () => clearInterval(interval), { once: true });
+  })();
+
+  // ═════════════════════════════════════════════════
+  // BAT-SIGNAL — cone rotation locked on V center (pixel-perfect)
+  // Reads V position after CSS transform and computes exact angle
+  // from skyline apex (50vw, 100vh) to V center each frame.
+  // ═════════════════════════════════════════════════
+  (function () {
+    const wander = document.querySelector<HTMLElement>(".batsignal-wander");
+    const cone = document.querySelector<HTMLElement>(".batsignal-cone");
+    if (!wander || !cone) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduceMotion.matches) return;
+
+    // Polygone SVG : apex (50,100) → tip (_, -150). Sur SVG stretch\u00e9 en 100vh,
+    // la longueur naturelle du faisceau avant scale est 250% = 2.5 \u00d7 innerHeight.
+    const NATURAL_LEN_VH_FACTOR = 2.5;
+
+    let rafId = 0;
+    const tick = () => {
+      const r = wander.getBoundingClientRect();
+      const vx = r.left + r.width / 2;
+      const vy = r.top + r.height / 2;
+      const apexX = window.innerWidth * 0.5;
+      const apexY = window.innerHeight; // skyline = bas du viewport
+      const dx = vx - apexX;
+      const dy = apexY - vy;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const naturalLen = NATURAL_LEN_VH_FACTOR * window.innerHeight;
+      // scaleY ajuste la longueur du faisceau pour qu'il s'arr\u00eate pile au V.
+      // Le multiplicateur 1.05 laisse le V juste \u00e0 l'int\u00e9rieur de la pointe.
+      const scaleY = (distance * 1.05) / naturalLen;
+      const angleDeg = (Math.atan2(dx, dy) * 180) / Math.PI;
+      cone.style.transform = `rotate(${angleDeg}deg) scaleY(${scaleY})`;
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    window.addEventListener(
+      "beforeunload",
+      () => cancelAnimationFrame(rafId),
+      { once: true }
+    );
+  })();
+</script>

@@ -29,6 +29,14 @@ export const siteConfig = {
     { id: "puff-cbd", label: "Puff & CBD", icon: "leaf" },
     { id: "importes", label: "Importes", icon: "globe" },
   ],
+  marqueeMessages: [
+    "Ouvert 7j/7 jusqu'a 02h",
+    "Monster & sodas import USA",
+    "Ramen & snacks Japon",
+    "CBD premium & puff nouveaux gouts",
+    "Livraison a Villers-Cotterets",
+    "Paiement CB / especes / sans contact",
+  ],
 } as const;
 
 export type Category = (typeof siteConfig.categories)[number]["id"];
