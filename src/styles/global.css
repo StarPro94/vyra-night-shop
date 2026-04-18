@@ -538,6 +538,19 @@ body {
 
 .marquee--paused .marquee__track { animation-play-state: paused; }
 
+/* Chevron indicateur de scroll horizontal (nav catégories mobile) */
+@keyframes nav-hint-bounce {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(5px); }
+}
+.nav-hint-chevron {
+  animation: nav-hint-bounce 1.6s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-hint-chevron { animation: none; }
+}
+
 /* Allegement perf sur mobile (< 768px) : on desactive particules + light
    shafts et on ralentit le marquee. Le bat-signal est deja hidden md:block. */
 @media (max-width: 767px) {

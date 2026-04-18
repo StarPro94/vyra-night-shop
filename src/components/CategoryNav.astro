@@ -14,20 +14,52 @@ const icons: Record<string, string> = {
   class="sticky top-0 z-40 bg-bg/95 backdrop-blur-sm border-b border-surface-border safe-top"
   aria-label="Catégories de produits"
 >
-  <div class="max-w-6xl mx-auto flex gap-2 sm:gap-1 overflow-x-auto px-4 py-3 scrollbar-none fade-mask-x snap-nav safe-x">
-    {siteConfig.categories.map((cat) => (
-      <a
-        href={`#${cat.id}`}
-        data-nav-link
-        class="touch-cta flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-sm
-               text-sm font-medium text-text-muted
-               hover:text-text hover:bg-surface-elevated
-               aria-[current=true]:text-vyra aria-[current=true]:bg-vyra-dim
-               transition-colors duration-150 min-h-[44px]"
-      >
-        <span set:html={icons[cat.icon]} />
-        {cat.label}
-      </a>
-    ))}
+  <div class="relative max-w-6xl mx-auto">
+    <div
+      class="flex gap-2 sm:gap-1 overflow-x-auto px-4 py-3 scrollbar-none snap-nav safe-x"
+      data-category-scroll
+    >
+      {siteConfig.categories.map((cat) => (
+        <a
+          href={`#${cat.id}`}
+          data-nav-link
+          class="touch-cta flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-sm
+                 text-sm font-medium text-text-muted
+                 hover:text-text hover:bg-surface-elevated
+                 aria-[current=true]:text-vyra aria-[current=true]:bg-vyra-dim
+                 transition-colors duration-150 min-h-[44px]"
+        >
+          <span set:html={icons[cat.icon]} />
+          {cat.label}
+        </a>
+      ))}
+    </div>
+
+    <!-- Scroll hint : gradient + chevron orange animé, disparaît quand on atteint la fin -->
+    <div
+      class="nav-scroll-hint pointer-events-none absolute right-0 top-0 bottom-0 flex items-center justify-end
+             pr-2 pl-10 bg-gradient-to-l from-bg via-bg/80 to-transparent
+             transition-opacity duration-200 md:hidden"
+      data-scroll-hint
+      aria-hidden="true"
+    >
+      <svg class="nav-hint-chevron w-5 h-5 text-sa-orange drop-shadow-[0_0_6px_rgba(232,147,90,0.6)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
   </div>
 </nav>
+
+<script>
+  const scroll = document.querySelector<HTMLElement>("[data-category-scroll]");
+  const hint = document.querySelector<HTMLElement>("[data-scroll-hint]");
+  if (scroll && hint) {
+    const update = () => {
+      const atEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 8;
+      hint.style.opacity = atEnd ? "0" : "1";
+    };
+    update();
+    scroll.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+  }
+</script>
