@@ -54,4 +54,5 @@ export const MARQUEE_MESSAGES = [
 ];
 
 export const HOURS = { open: "18:00", close: "02:00" };
+export const PHONE_DISPLAY = "07 57 53 99 24";
 export const DEFAULT_URL = "https://vyra-night-shop.vercel.app";

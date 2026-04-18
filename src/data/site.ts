@@ -15,8 +15,9 @@ export const siteConfig = {
     latitude: 49.2533,
     longitude: 3.09,
   },
-  phone: "+33XXXXXXXXX", // À remplir
-  whatsapp: "33XXXXXXXXX", // À remplir (sans le +)
+  phone: "+33757539924",
+  phoneDisplay: "07 57 53 99 24",
+  whatsapp: "33757539924",
   instagram: "vyra_nightshop",
   hours: {
     label: "Tous les jours",

@@ -11,6 +11,7 @@ import {
   DEFAULT_URL,
   CATEGORIES,
   HOURS,
+  PHONE_DISPLAY,
 } from "./lib/brand-tokens.mjs";
 import { textPath, textBBox, svgDoc, rasterize, ensureDir } from "./lib/svg-utils.mjs";
 import { renderVyraWordmark, renderNightShop } from "./lib/wordmark.mjs";
@@ -64,7 +65,7 @@ function buildInfoBlock({ cx, y }) {
   const lines = [
     { text: ADDRESS, color: BRAND.text },
     { text: `OUVERT DE ${HOURS.open} À ${HOURS.close} · 7J/7`, color: BRAND.textMuted },
-    { text: "@VYRA_NIGHTSHOP · WHATSAPP DISPO", color: BRAND.vyra },
+    { text: `@VYRA_NIGHTSHOP · ${PHONE_DISPLAY}`, color: BRAND.vyra },
   ];
   const fs = 38;
   const lineHeight = fs * 1.8;

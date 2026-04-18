@@ -12,6 +12,7 @@ import {
   DEFAULT_URL,
   CATEGORIES,
   HOURS,
+  PHONE_DISPLAY,
 } from "./lib/brand-tokens.mjs";
 import { textPath, textBBox, svgDoc, rasterize, ensureDir } from "./lib/svg-utils.mjs";
 import { renderVyraWordmark, renderNightShop } from "./lib/wordmark.mjs";
@@ -62,6 +63,7 @@ function buildInfoBlock({ cx, y }) {
   const addressY = y;
   const hoursY = y + 46;
   const handleY = y + 115;
+  const phoneY = y + 170;
   return `
     <text x="${cx}" y="${addressY}" text-anchor="middle"
       font-family="Consolas, Menlo, 'Courier New', monospace"
@@ -74,7 +76,11 @@ function buildInfoBlock({ cx, y }) {
     <text x="${cx}" y="${handleY}" text-anchor="middle"
       font-family="Arial Black, Arial, sans-serif"
       font-size="40" font-weight="900" letter-spacing="3"
-      fill="${BRAND.vyra}">@VYRA_NIGHTSHOP</text>`;
+      fill="${BRAND.vyra}">@VYRA_NIGHTSHOP</text>
+    <text x="${cx}" y="${phoneY}" text-anchor="middle"
+      font-family="Consolas, Menlo, 'Courier New', monospace"
+      font-size="26" font-weight="700" letter-spacing="3"
+      fill="${BRAND.vyraLight}">${escapeXml(PHONE_DISPLAY)}</text>`;
 }
 
 function escapeXml(s) {
