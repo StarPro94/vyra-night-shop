@@ -9,7 +9,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "qr": "node scripts/generate-qr.mjs",
+    "flyer": "node scripts/generate-flyer-a4.mjs",
+    "story": "node scripts/generate-story-ig.mjs",
+    "assets": "npm run qr && npm run flyer && npm run story"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
