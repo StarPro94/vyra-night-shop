@@ -14,7 +14,7 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
 ---
 
 <section
-  class="hero-night-canvas relative min-h-dvh overflow-hidden pb-40 lg:pb-48 flex flex-col justify-center"
+  class="hero-night-canvas relative min-h-dvh overflow-hidden pb-44 sm:pb-40 lg:pb-48 flex flex-col justify-center"
   aria-labelledby="hero-title"
 >
   <!-- ═══════════════════════════════════════════════
@@ -108,11 +108,12 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
       <div class="lg:col-span-7 relative text-center lg:text-left">
         <!-- Serial number header -->
         <p
-          class="hero-rise font-mono text-[10px] sm:text-xs tracking-[0.22em] text-text-subtle mb-5 uppercase lg:max-w-fit lg:pr-4"
+          class="hero-rise font-mono text-[9px] sm:text-xs tracking-[0.14em] sm:tracking-[0.22em] text-text-subtle mb-5 uppercase lg:max-w-fit lg:pr-4"
           style="--rise-delay: 100"
         >
           <span class="text-sa-orange">★</span>
-          14 RUE LEVEILLÉ · V-C 02600 · DEPUIS 2026
+          <span class="sm:hidden">14 RUE LEVEILLÉ · V-C · 2026</span>
+          <span class="hidden sm:inline">14 RUE LEVEILLÉ · V-C 02600 · DEPUIS 2026</span>
           <span class="text-sa-orange">★</span>
         </p>
 
@@ -206,7 +207,7 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
             href={`https://wa.me/${siteConfig.whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 px-7 py-3 min-h-[48px] w-full sm:w-auto
+            class="touch-cta inline-flex items-center justify-center gap-2 px-7 py-3 min-h-[48px] w-full sm:w-auto
                    bg-vyra text-bg font-bold text-sm uppercase tracking-wider rounded-sm
                    hover:bg-vyra-light hover:-translate-y-0.5 active:scale-[0.98]
                    transition-all duration-150
@@ -219,7 +220,7 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
           </a>
           <a
             href="#catalogue"
-            class="inline-flex items-center justify-center gap-2 px-7 py-3 min-h-[48px] w-full sm:w-auto
+            class="touch-cta inline-flex items-center justify-center gap-2 px-7 py-3 min-h-[48px] w-full sm:w-auto
                    bg-transparent border-2 border-sa-orange text-sa-orange font-bold text-sm uppercase tracking-wider rounded-sm
                    hover:bg-sa-orange hover:text-bg hover:-translate-y-0.5 active:scale-[0.98]
                    transition-all duration-150"
@@ -250,7 +251,7 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
     </div>
 
     <!-- Mobile stickers row (stacked under both columns) -->
-    <div class="lg:hidden mt-10 flex flex-wrap justify-center gap-2 hero-rise" style="--rise-delay: 1200" aria-hidden="true">
+    <div class="lg:hidden mt-10 flex flex-wrap justify-center gap-2 max-w-[92%] mx-auto hero-rise" style="--rise-delay: 1200" aria-hidden="true">
       <span class="sticker sticker-1" style="animation: none; transform: rotate(-4deg);">Snacks</span>
       <span class="sticker sticker-2" style="animation: none; transform: rotate(3deg);">CBD & Puff</span>
       <span class="sticker sticker-3" style="animation: none; transform: rotate(-2deg);">Import US/JP</span>

@@ -499,3 +499,49 @@ body {
   .hero-rise { animation: none; opacity: 1; transform: none; }
   .batsignal-wander, .batsignal-cone { animation: none; }
 }
+
+/* ============================================
+   Mobile-first utilities
+   Safe-area (notch/dynamic island/gesture bar),
+   content-visibility (differ render hors fold),
+   fade-mask horizontal (nav scrollable),
+   scroll-snap (nav categories),
+   touch-action (elimine delai 300ms iOS).
+   ============================================ */
+
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-top    { padding-top: max(var(--pad-y, 0px), env(safe-area-inset-top)); }
+  .safe-bottom { padding-bottom: max(var(--pad-y, 0px), env(safe-area-inset-bottom)); }
+  .safe-x {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 800px;
+}
+
+.fade-mask-x {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+
+.snap-nav {
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1rem;
+}
+.snap-nav > * { scroll-snap-align: start; }
+
+.touch-cta { touch-action: manipulation; }
+
+.marquee--paused .marquee__track { animation-play-state: paused; }
+
+/* Allegement perf sur mobile (< 768px) : on desactive particules + light
+   shafts et on ralentit le marquee. Le bat-signal est deja hidden md:block. */
+@media (max-width: 767px) {
+  .particle { display: none; }
+  .hero-night-canvas > div[aria-hidden="true"] > div.blur-3xl { display: none; }
+  .marquee__track { animation-duration: 60s; }
+}

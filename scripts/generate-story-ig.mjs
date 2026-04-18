@@ -57,23 +57,24 @@ function buildCategoriesLine({ cx, y, fontSize = 34 }) {
   return parts.join("");
 }
 
+// Info block avec @insta mis en valeur (dernière ligne plus grande, vert vif).
 function buildInfoBlock({ cx, y }) {
-  const lines = [
-    { text: ADDRESS, color: BRAND.text },
-    { text: `${HOURS.open}–${HOURS.close} · 7J/7 · LIVRAISON`, color: BRAND.textMuted },
-    { text: "@VYRA_NIGHTSHOP", color: BRAND.vyra },
-  ];
-  const fs = 22;
-  const lineHeight = fs * 1.9;
-  return lines
-    .map(
-      (line, i) =>
-        `<text x="${cx}" y="${y + i * lineHeight}" text-anchor="middle"
-          font-family="Consolas, Menlo, 'Courier New', monospace"
-          font-size="${fs}" font-weight="700" letter-spacing="3"
-          fill="${line.color}">${escapeXml(line.text)}</text>`
-    )
-    .join("");
+  const addressY = y;
+  const hoursY = y + 46;
+  const handleY = y + 115;
+  return `
+    <text x="${cx}" y="${addressY}" text-anchor="middle"
+      font-family="Consolas, Menlo, 'Courier New', monospace"
+      font-size="22" font-weight="700" letter-spacing="3"
+      fill="${BRAND.text}">${escapeXml(ADDRESS)}</text>
+    <text x="${cx}" y="${hoursY}" text-anchor="middle"
+      font-family="Consolas, Menlo, 'Courier New', monospace"
+      font-size="22" font-weight="700" letter-spacing="3"
+      fill="${BRAND.textMuted}">${escapeXml(`${HOURS.open}–${HOURS.close} · 7J/7 · LIVRAISON`)}</text>
+    <text x="${cx}" y="${handleY}" text-anchor="middle"
+      font-family="Arial Black, Arial, sans-serif"
+      font-size="40" font-weight="900" letter-spacing="3"
+      fill="${BRAND.vyra}">@VYRA_NIGHTSHOP</text>`;
 }
 
 function escapeXml(s) {
@@ -96,68 +97,70 @@ async function main() {
     cx, y: serialY, fontSize: 18, starColor: SITE_FLAVOR.saOrange,
   });
 
-  // VYRA wordmark compact pour story mobile.
-  const vyraFontSize = 240;
-  const vyraBaseline = 470;
+  // VYRA réduit pour laisser place à 4 stickers autour + info block aéré.
+  const vyraFontSize = 210;
+  const vyraBaseline = 460;
   const vyraWordmark = renderVyraWordmark({
     cx, baselineY: vyraBaseline, fontSize: vyraFontSize, color: BRAND.text,
   });
 
-  const nightFontSize = 58;
-  const nightBaseline = vyraBaseline + 68;
+  const nightFontSize = 54;
+  const nightBaseline = vyraBaseline + 62;     // 522
   const nightShop = renderNightShop({
     cx, baselineY: nightBaseline, fontSize: nightFontSize,
     color: BRAND.vyra, filterUrl: "story-neon-glow",
   });
 
-  const catY = nightBaseline + 62;
-  const categoriesLine = buildCategoriesLine({ cx, y: catY, fontSize: 30 });
+  const catY = nightBaseline + 58;             // 580
+  const categoriesLine = buildCategoriesLine({ cx, y: catY, fontSize: 28 });
 
-  // QR core 700×700 centré — bon compromis scannable à taille mobile.
-  const qrSize = 700;
+  // QR 640×640 centré. Plus petit que précédemment pour dégager du bas.
+  const qrSize = 640;
   const qrCoreSvg = await buildQrGlowupSvg({ url, size: 1024, withFrame: false });
   const qrInner = extractInnerSvg(qrCoreSvg);
   const qrScale = qrSize / 1024;
   const qrX = (CANVAS_W - qrSize) / 2;
-  const qrY = catY + 40;
+  const qrY = catY + 38;                        // 618, ends at 1258
   const qrHalo = `<rect x="${qrX - 20}" y="${qrY - 20}"
     width="${qrSize + 40}" height="${qrSize + 40}" rx="16"
     fill="${BRAND.vyra}" opacity="0.22" filter="url(#story-qr-halo)"/>`;
   const qrEmbed = `<g transform="translate(${qrX}, ${qrY}) scale(${qrScale})">${qrInner}</g>`;
 
   // CTA sous QR.
-  const ctaY = qrY + qrSize + 70;
+  const ctaY = qrY + qrSize + 62;               // 1320
   const ctaText = "SCAN POUR COMMANDER";
   const ctaPath = textPath(ctaText, cx, ctaY, 44);
   const cta = `<path d="${ctaPath.d}" fill="${BRAND.vyra}"/>`;
 
-  // Info block sous CTA.
-  const infoY = ctaY + 50;
+  // Info block aéré. @insta bien visible en dernière ligne, gros + vert.
+  const infoY = ctaY + 48;                      // 1368 (address, hours, then @insta bigger)
   const infoBlock = buildInfoBlock({ cx, y: infoY });
 
   // Skyline site-flavor (multi-color enseignes).
-  const skylineH = 130;
-  const skylineY = CANVAS_H - 300 - skylineH;
+  const skylineH = 90;
+  const skylineY = 1620;                        // ends at 1710
   const skyline = renderSkyline({
     x: 0, y: skylineY, width: CANVAS_W, height: skylineH, variant: "site",
   });
 
-  // Marquee orange — echo du hero site.
-  const marqueeH = 54;
-  const marqueeY = CANVAS_H - 300;
+  // Marquee orange à la toute fin.
+  const marqueeH = 70;
+  const marqueeY = CANVAS_H - marqueeH;         // 1850
   const marquee = renderMarqueeStrip({
     x: 0, y: marqueeY, width: CANVAS_W, height: marqueeH,
     messages: ["OUVERT 7J/7", "LIVRAISON V-C", "SNACKS US/JP", "CBD PREMIUM"],
-    fontSize: 18, theme: "orange",
+    fontSize: 22, theme: "orange",
   });
 
-  // 2 stickers seulement sur la story (format compact) — top-left + top-right
-  // pour ne pas empiéter sur les catégories / QR.
+  // 4 stickers flottants — 2 en haut (corners), 2 au milieu de VYRA (sides).
+  // Placés aux edges gauches/droits du canvas pour ne pas chevaucher le wordmark.
   const stickers = renderFloatingStickers({
-    fontSize: 24,
+    fontSize: 22,
     positions: [
-      { cx: 930, cy: 330, rotation: -6 },  // top-right: SNACKS (orange)
-      { cx: 150, cy: 380, rotation: 5 },   // top-left: CBD & PUFF (vert)
+      { cx: 920, cy: 315, rotation: -6 },  // top-right: SNACKS (orange)
+      { cx: 160, cy: 355, rotation: 5 },   // top-left: CBD & PUFF (vert)
+      { cx: 170, cy: 525, rotation: -4 },  // mid-left: IMPORT US/JP (mauve) — hauteur NIGHT SHOP
+      { cx: 910, cy: 505, rotation: 7 },   // mid-right: LIVRAISON (violet)
     ],
   });
 

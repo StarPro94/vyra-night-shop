@@ -12,7 +12,7 @@ const { id, title } = Astro.props;
 const products = getProductsByCategory(id);
 ---
 
-<section id={id} class="py-16 sm:py-20 px-4" aria-labelledby={`heading-${id}`}>
+<section id={id} class="py-16 sm:py-20 px-4 cv-auto" aria-labelledby={`heading-${id}`}>
   <div class="max-w-6xl mx-auto">
     <!-- Section heading with GTA-style underline -->
     <div class="mb-10 reveal" style="--stagger: 0">

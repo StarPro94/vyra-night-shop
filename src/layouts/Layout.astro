@@ -57,6 +57,16 @@ import SEOHead from "../components/SEOHead.astro";
         );
         sections.forEach((s) => navObserver.observe(s));
       }
-    </script>
+
+      // Pause marquee when offscreen (economise CPU mobile)
+      const marquee = document.querySelector(".marquee");
+      if (marquee) {
+        const marqueeObserver = new IntersectionObserver(
+          ([entry]) => marquee.classList.toggle("marquee--paused", !entry.isIntersecting),
+          { threshold: 0 }
+        );
+        marqueeObserver.observe(marquee);
+      }
+</script>
   </body>
 </html>

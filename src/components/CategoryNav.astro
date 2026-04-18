@@ -11,15 +11,15 @@ const icons: Record<string, string> = {
 
 <nav
   id="catalogue"
-  class="sticky top-0 z-40 bg-bg/95 backdrop-blur-sm border-b border-surface-border"
-  aria-label="Categories de produits"
+  class="sticky top-0 z-40 bg-bg/95 backdrop-blur-sm border-b border-surface-border safe-top"
+  aria-label="Catégories de produits"
 >
-  <div class="max-w-6xl mx-auto flex gap-1 overflow-x-auto px-4 py-3 scrollbar-none">
+  <div class="max-w-6xl mx-auto flex gap-2 sm:gap-1 overflow-x-auto px-4 py-3 scrollbar-none fade-mask-x snap-nav safe-x">
     {siteConfig.categories.map((cat) => (
       <a
         href={`#${cat.id}`}
         data-nav-link
-        class="flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-sm
+        class="touch-cta flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-sm
                text-sm font-medium text-text-muted
                hover:text-text hover:bg-surface-elevated
                aria-[current=true]:text-vyra aria-[current=true]:bg-vyra-dim

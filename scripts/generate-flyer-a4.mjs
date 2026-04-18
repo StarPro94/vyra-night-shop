@@ -176,10 +176,16 @@ async function main() {
     ],
   });
 
-  // Frame corners (4 L verts) aux extrémités du canvas.
+
+  // Frame corners (4 L verts) — s'arrêtent au-dessus du marquee orange
+  // pour ne pas chevaucher la bande de bas de page.
   const frameCorners = renderFrameCorners({
-    x: 60, y: 60, width: CANVAS_W - 120, height: CANVAS_H - 120,
-    size: 120, thickness: 5,
+    x: 60,
+    y: 60,
+    width: CANVAS_W - 120,
+    height: marqueeY - 60 - 20,   // laisse 20px d'air entre frame et marquee
+    size: 120,
+    thickness: 5,
   });
 
   // Fond radial + grain.

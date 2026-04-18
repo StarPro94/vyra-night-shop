@@ -45,12 +45,12 @@ export const CATEGORIES = [
 // Miroir de siteConfig.marqueeMessages (src/data/site.ts).
 // À re-synchroniser si le fichier source change.
 export const MARQUEE_MESSAGES = [
-  "Ouvert 7j/7 jusqu'a 02h",
+  "Ouvert 7j/7 jusqu'à 02h",
   "Monster & sodas import USA",
   "Ramen & snacks Japon",
-  "CBD premium & puff nouveaux gouts",
-  "Livraison a Villers-Cotterets",
-  "Paiement CB / especes / sans contact",
+  "CBD premium & puff nouveaux goûts",
+  "Livraison à Villers-Cotterêts",
+  "Paiement CB / espèces / sans contact",
 ];
 
 export const HOURS = { open: "18:00", close: "02:00" };

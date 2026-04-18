@@ -34,10 +34,10 @@ export const products: Product[] = [
   { name: "Puff Rechargeable", category: "puff-cbd", badge: "nouveau" },
   { name: "Fleurs CBD Premium", category: "puff-cbd" },
   { name: "Huile CBD 10%", category: "puff-cbd" },
-  { name: "Resine CBD", category: "puff-cbd" },
+  { name: "Résine CBD", category: "puff-cbd" },
   { name: "Infusion CBD", category: "puff-cbd" },
 
-  // Importes US & Japon
+  // Imports US & Japon
   {
     name: "Fanta Grape (USA)",
     category: "importes",
