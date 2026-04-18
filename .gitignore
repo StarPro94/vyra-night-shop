@@ -30,6 +30,9 @@ pnpm-debug.log*
 
 .vercel
 
+# Claude Code local config
+.claude/
+
 # Pricedown OTF (desktop-license only, not for redistribution)
 scripts/assets/*.otf
 scripts/assets/*.ttf

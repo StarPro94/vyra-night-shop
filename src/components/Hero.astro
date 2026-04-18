@@ -48,11 +48,14 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
           <!-- Faisceau : lumineux \u00e0 la skyline, reste visible jusqu'au V o\u00f9 il
                se fond dans le halo (le JS scale la pointe pile sur le V). -->
           <linearGradient id="bs-beam" x1="50%" y1="100%" x2="50%" y2="0%">
-            <stop offset="0%" stop-color="#81C784" stop-opacity="0.55"/>
-            <stop offset="20%" stop-color="#66BB6A" stop-opacity="0.38"/>
+            <stop offset="0%" stop-color="#81C784" stop-opacity="0"/>
+            <stop offset="4%" stop-color="#81C784" stop-opacity="0.32"/>
+            <stop offset="10%" stop-color="#81C784" stop-opacity="0.55"/>
+            <stop offset="25%" stop-color="#66BB6A" stop-opacity="0.38"/>
             <stop offset="50%" stop-color="#66BB6A" stop-opacity="0.24"/>
-            <stop offset="80%" stop-color="#66BB6A" stop-opacity="0.14"/>
-            <stop offset="100%" stop-color="#66BB6A" stop-opacity="0.06"/>
+            <stop offset="75%" stop-color="#66BB6A" stop-opacity="0.12"/>
+            <stop offset="92%" stop-color="#66BB6A" stop-opacity="0.04"/>
+            <stop offset="100%" stop-color="#66BB6A" stop-opacity="0"/>
           </linearGradient>
           <filter id="bs-blur" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="1.6"/>
@@ -61,8 +64,8 @@ const particles = Array.from({ length: 24 }, (_, i) => ({
         <!-- Apex (50,100) = bas du viewport (skyline). Tip (46,-150)/(54,-150)
              sort largement au-dessus du viewport pour toujours atteindre le V,
              quelle que soit sa position ou l'aspect ratio. -->
-        <polygon
-          points="50,100 46,-150 54,-150"
+        <path
+          d="M 50,100 L 46,-140 Q 46,-150 50,-150 Q 54,-150 54,-140 Z"
           fill="url(#bs-beam)"
           filter="url(#bs-blur)"
         />
