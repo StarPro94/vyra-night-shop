@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Vyra Night Shop",
   tagline: "Ouvert quand les autres dorment",
   description:
-    "Vyra Night Shop, votre épicerie de nuit à Villers-Cotterêts. Snacks, boissons, alcool, puff, CBD et produits importés USA et Japon. Ouvert tard, 7j/7. À emporter et en livraison.",
+    "Vyra Night Shop, votre épicerie de nuit à Villers-Cotterêts. Snacks, softs, alcools, bières, spiritueux, puff, CBD, tabac et accessoires OCB. Ouvert tard, 7j/7. À emporter et en livraison.",
   url: "https://vyra-night-shop.vercel.app",
   address: {
     street: "14 rue Léveillé",
@@ -26,15 +26,17 @@ export const siteConfig = {
   },
   categories: [
     { id: "snacks", label: "Snacks", icon: "cookie" },
-    { id: "boissons", label: "Boissons", icon: "glass" },
+    { id: "softs", label: "Softs", icon: "glass" },
+    { id: "alcools", label: "Alcools", icon: "bottle" },
     { id: "puff-cbd", label: "Puff & CBD", icon: "leaf" },
-    { id: "importes", label: "Imports", icon: "globe" },
+    { id: "tabac", label: "Tabac & Accessoires", icon: "flame" },
   ],
   marqueeMessages: [
     "Ouvert 7j/7 jusqu'à 02h",
-    "Monster & sodas import USA",
-    "Ramen & snacks Japon",
-    "CBD premium & puff nouveaux goûts",
+    "Bières, spiritueux, mini-bouteilles flash",
+    "Red Bull, Monster, sodas import",
+    "Puff JNR jusqu'à 50 000 puffs",
+    "OCB, tubes, briquets, accessoires",
     "Livraison à Villers-Cotterêts",
     "Paiement CB / espèces / sans contact",
   ],
